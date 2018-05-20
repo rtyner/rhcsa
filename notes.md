@@ -116,7 +116,7 @@
   * extract single file named hello1 from archive
     * `star -x -f=archive.tar hello1`
 
-#### Creat and Edit Text Files
+#### Create and Edit Text Files
   * `vim` is the only option here, `nano` is for virgins
   * cw - change word
   * cc - remove line and enter insert mode
@@ -130,9 +130,169 @@
   * `ls` /etc/ from within `vim`
     * :!`ls /etc/`
 
+#### Create, Delete, Copy, and Move Files and Directories
+  * create directories recursively
+    * `mkdir -p new-dir/dir1/dir2`
+      * p - create parent directories 
+  * `rmdir` - removes directories but not recursively
+
+#### Create Hard Links and Soft Links
+  * `ln` - creates symbolic and hard links
+   * by default will create a hard link
+  * soft links   
+    * `ln -s /etc/motd motd`
+      * creates a soft link from /etc/motd to motd in current directory
+      * s - soft link
+    * soft links will be broken if source target is moved/removed
+    * symbolic links can link across filesystems
+    * soft links are similar to shortcuts
+    * permission are inheritied from source file, symlink permissions do not matter
+  * hard links
+    * link directly to a specific inode location on a filesystem
+    * cannot link across filesystems
+    * when permissions are changed on one hard link target it's applied to the other as well
+
+#### List, Set, and Change Standard UGO/RWX Permissions
+  * first bit is file/dir/symlink
+    * d is dir
+    * - is file
+    * l is symlink
+  * after that groups of 3 are used
+    * first 3 are owner
+    * second 3 are group
+    * last 3 are other, everyone else on the system
+  * rwx - read, write, execute
+    * x - allows for execution of scripts
+  * permissions are changed with `chmod`
+    * octal or symbolic notation
+    * `chmod u+x` - gives user execute permissions
+    * `chmod u-x` - removes execute permissions from user
+    * `chmod g+x` - gives group execute permissions
+    * `chmod u+wrx` = gives user rwx permissions 
+  * add a group
+    * `groupadd finance`
+    * not in roots path, launched from /usr/sbin/groupadd
+  * list groups
+    * `getent group`
+    * `cat /etc/group`
+  * change owner (user and group) of an object
+    * `chown user:group object`
+  * change only group of an object
+    * `chown :group object`
+  * <mark>to navigate into a directory you need execute privileges</mark>
+  * add a secondary group to a user
+    * `usermod -G object user`
+      * G - secondary group
+    * user will need to logout for changes to take effect
+  * grant a group write permissions for an object
+    * `chmod g+w -R object`
+    * g+w - grant write to group
+    * R - recursively
+  * log user into another group as primary group
+    * `newgrp groupname`
+  * only allow directories to have execute permissions
+    * `chmod ug+X -R object`
+      * X - this changes it so only directories have execute
+    * this is good if you have scripts located in directories but don't want to mass allow the execution of them
+  * grant permissions for everyone (user, group, and other)
+    * `chmod a+r object`
+      * a - grants to it user, group, and other
+  * octal permissions
+    * allows for the use of numeric notation to set permissions
+    * `chmod 777`
+      * first character is owner
+      * second character is group owner
+      * third character is other
+    * 777 results in rwx for everyone
+    * the bits add up to 7
+      * read = 4
+      * write = 2
+      * execute = 1
+    * `chmod 440 -R directory`
+      * R - recursive
+ * setuid and setgid
+    * setgid is a permission bit
+    * when you are to exectute or open a file a new process is forked as the user who is executing the file
+    * setgid allows you to execute a file with the permissions of whoever owns the file, not who is executing it
+    * sticky bit represents setuid, shown as s (user) and S (group) in `ls` permissions
+    * essentially, setuid means execute this file with permissions of the owner of the file, not as the user executing the file
+    * setgid means execute with permissions of the group that owns it
+    * `chmod u+s file` - will run with same permissions as user who owns file 
+    * `chmod g+s file` - will run with same permissions as group who owns the file
+    * `chmod 4500 file` - 4 represensts setuid on the user
+    * `chmod 2500 file` - 2 represents setgid on group
+    * `chmod 6500 file` - 6 will setuid and setgid for both user and group
+    * sticky bit - prevents unauthorized users from deleting or renaming a file 
+      * `chmod +t file`
+      * `chmod 1777 file`
+        * 1 - set sticky bit
+      * `chmod 7777 file` setuid, setgid, and stickybit (just add them together)
+
+#### List, Set, and Change Standard UGO/RWX Permissions: `umask`
+  * `umask` - stands for user mask, allows for the setting of default permissions
+  * show default `umask` permissions with `umask`
+  * `umask` sets permissions for current session, logout clears them
+  * deafult is 0022
+  * 2 sets of `umask` permissions - privileged users and non-privileged
+  * default for a file is 666
+  * default for a directory is 777
+  * `umask` will never give execute permissions on a file - it will for a directory though
+
+#### Locate, Read, and Use System Documentation with `man`, `info`, and /usr/share/doc
+  * documentation can be from `man` page, from `--help`, from `info`, from /usr/share/doc, or within the `rpm`
+  * `man 5 passwd` - opens page 5 of man page
+  * <mark>`apropos passwd` - searches through all man pages, has to be cached though</mark>
+  * <mark>`mandb` - indexes everything in /usr/share/mani</mark>
+  * `info` - alternative to man pages
+    * searches /usr/share/info
+  * from within `info` hit ? to see navigation shortcuts
+  * `info --apropos=tee` - searches `info` for `tee`
+  * sometimes template config files will live here as well
+  * `locate passwd` searches cached database of entire system for anything related to passwd
+  * `updatedb` - updates `locate` cache
+  * if `locate` isn't installed, install the `mlocate` package
+  * `which passwd` - shows absolute path of program
+  * `whatis passwd` shows man pages for program - searches descriptions
+  * `whereis` - locates binary and source files for program
+  * `rpm -qd packagename` queries document files for the specified program
+
+#### Finding Files with `locate` and `find`
+  * `locate` - searches cached files in a database, db is updated by `cron`
+  * `updatedb` - updates locate cache
+  * `find` - much more powerful and can be complicated
+  * `find /etc -name motd` - searches /etc for ANYTHING with the name of motd
+  * `find /etc -user root` - finds everything in /etc owned by root
+  * `find / -mtime -3` - finds everything in / that have been modified in last 3 days
+  * `find / -mtime +3` - finds everything in / that have been modified in a time greater than the last 3 days
+  * `find / -uid 1002` - finds everything in / owned by user 1002
+  * `find / -user jeff -type f` finds all FILES owned by jeff
+  * `find / -user jeff -type f -exec cat {} \;` - finds all FILES owned by jeff and cats them
+    * {} means perform the exec on each file
+    * \; ends command
+  * `find / -user jeff -type f -exec cp {} /home/mary \;` - finds all FILES owned by jeff and copies them to marys home directory 
+  * `find /home/ -user jeff -type f exec rm {} \.` - finds all FILES owned by jeff and removes each file
+
+ 
+
+
+
+
+
+
+
+
+
+
+
 
 
 #### Misc. Notes
+  * `tee`
+  * `stat file` - shows status of a file
+  * `umask` - learn this, seems hard
+  * look up inodes
+  * SUDO - Substitute User and DO
+  * look into setuid and setgid
   * `history` \<ctrl-r> - allows searching through history
   * `touch {file1,file2,file3}` - create multiple files with {}
   * `systemctl get-default` - returns a target
