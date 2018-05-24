@@ -287,9 +287,12 @@
 
 
 #### Misc. Notes
+  * LVM
+  * `awk`
   * `tee`
   * `stat file` - shows status of a file
   * `umask` - learn this, seems hard
+  * `yum group list` - lists package groups
   * look up inodes
   * SUDO - Substitute User and DO
   * look into setuid and setgid
