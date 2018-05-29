@@ -272,10 +272,56 @@
   * `find / -user jeff -type f -exec cp {} /home/mary \;` - finds all FILES owned by jeff and copies them to marys home directory 
   * `find /home/ -user jeff -type f exec rm {} \.` - finds all FILES owned by jeff and removes each file
 
- 
+#### Boot, Reboot, and Shutdown a System
+  * newer rhel systems are using systemd as init system
+  * `init 0` - runlevel 0, shutsdown the system
+  * `init 6` - runlevel 6, restarts the system
+  * `init` is the deprecated way of doing this
+  * `reboot` - calls `systemctl reboot`
+  * `shutdown`
+    * -r - reboot
+    * -p - powers off
+    * `shutdown -r +5 System going down for reboot` - reboots system in 5 minutes with message displayed to users
+    * `shutdown -c` - cancels reboot
+    * `shutdown -r 00:00` - schedules reboot for 12AM (24hr time)
+  * when system is being shutdown its having its target changed
+  * targets replace runlevels in systemd
+  * /usr/lib/systemd/system - default targets
+  * physically poweroff a system
+    * `systemctl poweroff`
+    * `poweroff`
+    * `shutdown -p`
+  * `shutdown` is the proper way to handle power management and reboots
 
-
-
+#### Boot Systems into Different Targets Manually
+  * systemd has parallel bootup - can start multiple services at the same time
+  * systemd unit config files are called targets
+  * list available targets
+    * `systemctl list-units --type=target`
+  * list different target types
+    * `systemctl -t help`
+  * systemd unit config files
+    * target config files 
+  * unit config files are located in /usr/lib/systemd/system
+  * instead of writing startup scripts you write systemd unit services
+  * WantedBy - this is where you specify that your service is a dependency of a certain target
+  * `systemctl list-dependencies multi-user.target` - list dependencies of multi-user target
+  * `systemctl get-default` - lists current target
+  * targets
+    * multi-user.target - multiple users can be logged into the system, most likely terminal
+    * graphical.target - GUI 
+    * emergency.target - boots into root terminal with fs mounted read only 
+    * rescue.target - launches single user environment with minimal resources to troubleshoot and resuce system
+    * reboot.target
+  * AllowIsolate - means move system into this target and load the dependencies
+  * `systemctl isolate multi-user.target` - moves into multi-user target
+  * `systemctl set-default multi-user.target` - sets default target to multi-user
+  * default target is just symlink to specific target file
+  * interrupt the boot process and enter emergency or rescue
+    * interrupt at grub and edit linux16 kernel line
+    * add systemd.unit=rescue.target to the end
+    * continue boot
+  * 
 
 
 
@@ -288,6 +334,7 @@
 
 #### Misc. Notes
   * LVM
+  * runlevels have been deprecated with systemd - replaced with targets
   * `awk`
   * `tee`
   * `stat file` - shows status of a file
