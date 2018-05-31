@@ -321,6 +321,12 @@
     * interrupt at grub and edit linux16 kernel line
     * add systemd.unit=rescue.target to the end
     * continue boot
+
+#### Interrupt the Boot Process to Gain Access to a System
+  * Can be used to reset root password
+  * edit linux16 line in GRUB
+    * add `rd.break`
+  * launches into initramfs
   * 
 
 
@@ -334,6 +340,7 @@
 
 #### Misc. Notes
   * LVM
+  * looking into changing root pw
   * runlevels have been deprecated with systemd - replaced with targets
   * `awk`
   * `tee`
