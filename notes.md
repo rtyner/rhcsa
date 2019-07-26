@@ -3,11 +3,13 @@
 [Exam Objectives](https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam "Exam Objectives")
 
 #### **Reading Man Pages**
+  
   * [] - optional
   * __ - required
   * ... - multiple files
 
 #### **Input and Output Redirection**
+  
   * \> - redirect and overwrite
   * \>> - appends file
   * 2> - redirect stderr to something and hide from stdout
@@ -20,6 +22,7 @@
   * `tail -f` - continue appending as it's added to the file
 
 #### **Using grep and regex to Analyze Text**
+  
   * `grep '^#' /etc/ssh/sshd_config`
     * ^ - means to search for lines that start with #
     * searches that file and looks for lines that start with #
@@ -50,6 +53,7 @@
     * \+ - preceeding item is matched one or more times
 
 #### Accessing Remote Systems Using SSH 
+  
   * ssh config - /etc/ssh_config
     * PermitRootLogin - allows the root user to login via ssh - commented out by default
       * best practice to disable because an attacker would need to compromise regular user to login, then gain root permissions
@@ -63,6 +67,7 @@
     * this is just `ssh` with `get` and `put` commands
 
 #### Login and Switch Users in Multiuser Targets
+  
   * multiuser target - multiple users on same system
   * `su` - switch user to interactive shell
   * `su - `, `su -l`, `su --login` - switch user to login shell
@@ -73,6 +78,7 @@
     * /etc/profile - global bash_profile
 
 #### Archive, Compress, Unpack, and Uncompress Files using `tar`, `star`, `gzip`, and `bzip2`
+  
   * `tar` - allows for creation and compression of archives
   * `gzip filename` - zips a file
   * `gunzip` or `gzip -d` - unzips file
@@ -117,6 +123,7 @@
     * `star -x -f=archive.tar hello1`
 
 #### Create and Edit Text Files
+  
   * `vim` is the only option here, `nano` is for virgins
   * cw - change word
   * cc - remove line and enter insert mode
@@ -131,12 +138,14 @@
     * :!`ls /etc/`
 
 #### Create, Delete, Copy, and Move Files and Directories
+  
   * create directories recursively
     * `mkdir -p new-dir/dir1/dir2`
       * p - create parent directories 
   * `rmdir` - removes directories but not recursively
 
 #### Create Hard Links and Soft Links
+  
   * `ln` - creates symbolic and hard links
    * by default will create a hard link
   * soft links   
@@ -153,6 +162,7 @@
     * when permissions are changed on one hard link target it's applied to the other as well
 
 #### List, Set, and Change Standard UGO/RWX Permissions
+ 
   * first bit is file/dir/symlink
     * d is dir
     * - is file
@@ -229,6 +239,7 @@
       * `chmod 7777 file` setuid, setgid, and stickybit (just add them together)
 
 #### List, Set, and Change Standard UGO/RWX Permissions: `umask`
+  
   * `umask` - stands for user mask, allows for the setting of default permissions
   * show default `umask` permissions with `umask`
   * `umask` sets permissions for current session, logout clears them
@@ -239,6 +250,7 @@
   * `umask` will never give execute permissions on a file - it will for a directory though
 
 #### Locate, Read, and Use System Documentation with `man`, `info`, and /usr/share/doc
+  
   * documentation can be from `man` page, from `--help`, from `info`, from /usr/share/doc, or within the `rpm`
   * `man 5 passwd` - opens page 5 of man page
   * <mark>`apropos passwd` - searches through all man pages, has to be cached though</mark>
@@ -257,6 +269,7 @@
   * `rpm -qd packagename` queries document files for the specified program
 
 #### Finding Files with `locate` and `find`
+  
   * `locate` - searches cached files in a database, db is updated by `cron`
   * `updatedb` - updates locate cache
   * `find` - much more powerful and can be complicated
@@ -273,6 +286,7 @@
   * `find /home/ -user jeff -type f exec rm {} \.` - finds all FILES owned by jeff and removes each file
 
 #### Boot, Reboot, and Shutdown a System
+  
   * newer rhel systems are using systemd as init system
   * `init 0` - runlevel 0, shutsdown the system
   * `init 6` - runlevel 6, restarts the system
@@ -294,6 +308,7 @@
   * `shutdown` is the proper way to handle power management and reboots
 
 #### Boot Systems into Different Targets Manually
+  
   * systemd has parallel bootup - can start multiple services at the same time
   * systemd unit config files are called targets
   * list available targets
@@ -323,11 +338,12 @@
     * continue boot
 
 #### Interrupt the Boot Process to Gain Access to a System
-  * Can be used to reset root password
-  * edit linux16 line in GRUB
-    * add `rd.break`
-  * launches into initramfs
-  * 
+
+* Can be used to reset root password
+* edit linux16 line in GRUB
+  * add `rd.break`
+* launches into initramfs
+* 
 
 
 
@@ -339,22 +355,23 @@
 
 
 #### Misc. Notes
-  * LVM
-  * looking into changing root pw
-  * runlevels have been deprecated with systemd - replaced with targets
-  * `awk`
-  * `tee`
-  * `stat file` - shows status of a file
-  * `umask` - learn this, seems hard
-  * `yum group list` - lists package groups
-  * look up inodes
-  * SUDO - Substitute User and DO
-  * look into setuid and setgid
-  * `history` \<ctrl-r> - allows searching through history
-  * `touch {file1,file2,file3}` - create multiple files with {}
-  * `systemctl get-default` - returns a target
-  * by deafult RHEL7 aliases `rm` to `rm -i` to force deletion prompt
 
-[comment]: <> (<mark></mark> highlights text) 
+* LVM
+* looking into changing root pw
+* runlevels have been deprecated with systemd - replaced with targets
+* `awk`
+* `tee`
+* `stat file` - shows status of a file
+* `umask` - learn this, seems hard
+* `yum group list` - lists package groups
+* look up inodes
+* SUDO - Substitute User and DO
+* look into setuid and setgid
+* `history` \<ctrl-r> - allows searching through history
+* `touch {file1,file2,file3}` - create multiple files with {}
+* `systemctl get-default` - returns a target
+* by deafult RHEL7 aliases `rm` to `rm -i` to force deletion prompt
+
+[comment]: <> (<mark></mark> highlights text)
 [comment]: <> (&#46; - period)
 [comment]: <> (<span> to fuck hyperlinks)
